@@ -6,16 +6,16 @@
 
 <br>
 
-# Nome do projeto
+# Livro Caixa FarmTech
 
-## Nome do grupo
+## Grupo FarmTech Solutions
 
 ## 👨‍🎓 Integrantes: 
-- <a href="https://www.linkedin.com/company/inova-fusca">Nome do integrante 1</a>
-- <a href="https://www.linkedin.com/company/inova-fusca">Nome do integrante 2</a>
-- <a href="https://www.linkedin.com/company/inova-fusca">Nome do integrante 3</a> 
-- <a href="https://www.linkedin.com/company/inova-fusca">Nome do integrante 4</a> 
-- <a href="https://www.linkedin.com/company/inova-fusca">Nome do integrante 5</a>
+- Arthur Prudêncio Soares — RM569295
+- Caroline Coelho Mendes — RM570370
+- Leandro Paiva — RM572159
+- Lucas Viana de Lima — RM571835
+- Matheus Tavares Lima — RM572808
 
 ## 👩‍🏫 Professores:
 ### Tutor(a) 
@@ -26,7 +26,35 @@
 
 ## 📜 Descrição
 
-*Descreva seu projeto com base no texto do PBL (até 600 palavras)*
+O **Livro Caixa FarmTech** é um sistema de controle financeiro voltado para o agronegócio, desenvolvido para auxiliar produtores rurais na gestão do fluxo de caixa de suas culturas agrícolas.
+
+### O problema
+
+O produtor rural brasileiro enfrenta um grande desafio na gestão financeira de suas atividades. Com múltiplas culturas sendo cultivadas simultaneamente, acompanhar receitas e despesas de cada uma delas de forma organizada é uma tarefa complexa. A falta de controle financeiro pode levar o agricultor a operar no prejuízo sem perceber, comprometendo a sustentabilidade do negócio. Esse problema se agrava especialmente na agricultura familiar, que é a principal fonte de alimentos e renda para grande parte da população rural brasileira.
+
+### A solução
+
+O Livro Caixa FarmTech oferece um sistema completo de controle financeiro por cultura agrícola, permitindo ao produtor:
+
+- **Cadastrar culturas**: registrar as culturas cultivadas na propriedade (milho, soja, café, etc.), com sugestões de culturas comuns para facilitar o cadastro.
+- **Registrar lançamentos**: controlar receitas (vendas de produção, subvenções governamentais) e despesas (sementes, fertilizantes, defensivos, mão de obra, combustível, manutenção, frete) de cada cultura individualmente, com categorias pré-definidas.
+- **Visualizar balanço financeiro**: consultar o resultado financeiro de cada cultura e o consolidado geral da propriedade, com indicadores visuais de lucro (+) e prejuízo (-).
+- **Alertas de prejuízo**: o sistema monitora automaticamente as culturas e emite alertas quando alguma está operando em prejuízo, informando o valor do prejuízo e o percentual em que a despesa supera a receita. Os alertas são exibidos na inicialização do sistema, no balanço geral e imediatamente após o registro de um lançamento.
+- **Exportar relatórios**: gerar relatórios financeiros em formato texto (TXT), com o balanço completo de todas as culturas.
+- **Sincronização com banco de dados Oracle**: enviar e carregar dados do banco de dados Oracle da FIAP, garantindo persistência e possibilidade de acesso remoto.
+
+### Inovação
+
+O diferencial do sistema está no **alerta inteligente de prejuízo**, que funciona como um sistema de monitoramento financeiro em tempo real. A cada operação, o produtor é informado proativamente se alguma cultura está operando no vermelho, permitindo a tomada de decisão rápida — seja renegociando custos, ajustando a produção ou realocando recursos entre culturas. Essa abordagem transforma o sistema de um simples registro contábil em uma ferramenta de apoio à decisão.
+
+### Conteúdos técnicos aplicados
+
+O projeto aplica os conteúdos dos capítulos 3 a 6 de Python:
+
+- **Subalgoritmos**: funções com retorno (`criar_lancamento`, `calcular_totais_cultura`, `carregar_json`) e procedimentos (`cadastrar_cultura`, `registrar_lancamento`, `exibir_balanco`), todos com passagem de parâmetros.
+- **Estruturas de dados**: listas (lançamentos de cada cultura), tuplas (culturas padrão, categorias, retorno de totais), dicionários (estrutura de cultura, lançamento, totais gerais) e tabela de memória (balanço consolidado como lista de tuplas).
+- **Manipulação de arquivos**: leitura e escrita em JSON (persistência dos dados) e em texto (exportação de relatórios).
+- **Conexão com banco de dados Oracle**: criação de tabelas, inserção, consulta e sincronização bidirecional de dados com o Oracle, utilizando o driver `oracledb`.
 
 
 ## 📁 Estrutura de pastas
@@ -49,21 +77,51 @@ Dentre os arquivos e pastas presentes na raiz do projeto, definem-se:
 
 ## 🔧 Como executar o código
 
-*Acrescentar as informações necessárias sobre pré-requisitos (IDEs, serviços, bibliotecas etc.) e instalação básica do projeto, descrevendo eventuais versões utilizadas. Colocar um passo a passo de como o leitor pode baixar o seu código e executá-lo a partir de sua máquina ou seu repositório. Considere a explicação organizada em fase.*
+### Pré-requisitos
 
+- Python 3.8 ou superior
+- Acesso ao banco de dados Oracle da FIAP (opcional, para sincronização)
+
+### Instalação
+
+1. Clone o repositório:
+```bash
+git clone https://github.com/seu-usuario/Livro-Caixa-FarmTech.git
+cd Livro-Caixa-FarmTech
+```
+
+2. Crie e ative o ambiente virtual:
+```bash
+python -m venv .venv
+source .venv/bin/activate        # Linux/Mac
+.venv\Scripts\activate           # Windows
+```
+
+3. Instale as dependências:
+```bash
+pip install -r config/requirements.txt
+```
+
+4. (Opcional) Configure o banco de dados Oracle editando o arquivo `config/.env`:
+```env
+DB_USER="seu_rm"
+DB_PASSWORD="sua_senha"
+DB_DSN=oracle.fiap.com.br:1521/ORCL
+```
+
+### Execução
+
+```bash
+cd src
+python fluxo_caixa.py
+```
+
+O sistema abrirá o menu principal no terminal com as opções de cadastro, lançamentos, balanço, relatórios e sincronização com Oracle.
 
 ## 🗃 Histórico de lançamentos
 
-* 0.5.0 - XX/XX/2024
-    * 
-* 0.4.0 - XX/XX/2024
-    * 
-* 0.3.0 - XX/XX/2024
-    * 
-* 0.2.0 - XX/XX/2024
-    * 
-* 0.1.0 - XX/XX/2024
-    *
+* 1.0.0 - 14/04/2026
+    * Sistema completo: cadastro de culturas, lançamentos financeiros, balanço, alertas de prejuízo, exportação TXT, integração Oracle
 
 ## 📋 Licença
 

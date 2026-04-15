@@ -2,6 +2,9 @@ import json
 import os
 from datetime import datetime
 import oracledb
+from dotenv import load_dotenv
+
+load_dotenv(os.path.join(os.path.dirname(__file__), "..", "config", ".env"))
 
 # =============================================================================
 #  FLUXO DE CAIXA AGRÍCOLA - Controle Financeiro por Cultura FarmTech
@@ -188,9 +191,9 @@ def conectar_oracle():
     """Tenta conectar ao banco Oracle. Retorna conexão ou None."""
     try:
         conn = oracledb.connect(
-            user="SEU_RM",
-            password="SUA_SENHA",
-            dsn="oracle.fiap.com.br:1521/ORCL"
+            user=os.getenv("DB_USER"),
+            password=os.getenv("DB_PASSWORD"),
+            dsn=os.getenv("DB_DSN", "oracle.fiap.com.br:1521/ORCL")
         )
         return conn
     except Exception as e:
@@ -336,6 +339,30 @@ def carregar_do_oracle():
         conn.close()
 
 
+def verificar_alertas_prejuizo(dados):
+    """Verifica culturas em prejuízo e exibe alertas ao usuário. Retorna lista de culturas em prejuízo."""
+    culturas_prejuizo = []
+    for cultura in dados["culturas"]:
+        receita, despesa, lucro = calcular_totais_cultura(cultura)
+        if lucro < 0:
+            culturas_prejuizo.append((cultura["nome"], lucro, receita, despesa))
+
+    if culturas_prejuizo:
+        print()
+        print("  " + "!" * 52)
+        print("  ALERTA DE PREJUÍZO")
+        print("  " + "!" * 52)
+        for nome, lucro, receita, despesa in culturas_prejuizo:
+            percentual = (abs(lucro) / despesa * 100) if despesa > 0 else 0
+            print(f"  >>> {nome}: prejuízo de {formatar_moeda(abs(lucro))}")
+            print(f"      Receita: {formatar_moeda(receita)} | Despesa: {formatar_moeda(despesa)}")
+            print(f"      Despesa supera receita em {percentual:.1f}%")
+        print("  " + "!" * 52)
+        print()
+
+    return culturas_prejuizo
+
+
 def formatar_moeda(valor):
     """Formata valor como moeda brasileira."""
     return f"R$ {valor:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
@@ -380,6 +407,8 @@ def exibir_balanco(dados):
         f"{formatar_moeda(totais['despesa']):>15} {formatar_moeda(totais['lucro']):>15} {ind_total}"
     )
     print()
+
+    verificar_alertas_prejuizo(dados)
 
 
 def exibir_lancamentos_cultura(cultura):
@@ -504,6 +533,11 @@ def registrar_lancamento(dados):
         cultura["lancamentos"].append(lancamento)
         salvar_json(dados)
         print(f"\n  ✔ Lançamento registrado com sucesso!")
+
+        _, _, lucro_atual = calcular_totais_cultura(cultura)
+        if lucro_atual < 0:
+            print(f"\n  !!! ALERTA: A cultura '{cultura['nome']}' está em PREJUÍZO "
+                  f"de {formatar_moeda(abs(lucro_atual))} !!!")
     else:
         print("\n  Lançamento cancelado.")
 
@@ -579,6 +613,8 @@ def menu_principal():
     exibir_cabecalho("FLUXO DE CAIXA AGRÍCOLA")
     print("  Sistema de controle financeiro por cultura")
     print()
+
+    verificar_alertas_prejuizo(dados)
 
     while True:
         print("=" * 56)
